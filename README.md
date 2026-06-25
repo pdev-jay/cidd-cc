@@ -8,7 +8,7 @@
 - 집단지성 = wisdom-of-crowds(독립 추정 *집계*)가 **아니다.** 같은 수준 에이전트가 lens별로 검토 → 충돌 → 수정으로 수렴하는 **dialectic deliberation**. 엔진은 투표가 아니라 *반박*.
 - 단일 모델 다각도 = *누락형* 오류를 잡는다. *편향형*(공유 사각)은 오라클/cross-model/사람이 맡는다.
 
-## 네 스킬 (단계마다 오라클 가용성이 다르면 오케스트레이션 모양도 다르다)
+## 단계 스킬 (단계마다 오라클 가용성이 다르면 오케스트레이션 모양도 다르다)
 | 스킬 | 단계 | 오라클 | 엔진 | 게이트 |
 |---|---|---|---|---|
 | `/cidd:direction-explore` | explore (0) | **없음**(초안조차) | 발산 생성 → judge-panel 종합 | — |
@@ -22,15 +22,13 @@
 - **review-oracle-first**: ① 하드 오라클 실행(test/type/lint) → ② oracle-extension(coverage/mutation) → ③ review-lens는 ①②가 *구조적으로 못 보는 것만* advisory. **lens는 절대 머지 게이트가 아니다.**
 - plan·build·review 출력은 **맨 위에 layer 통과 flow ASCII 다이어그램** — layer(Route/Service/Infra/External/Worker…)를 왼쪽 축으로, 요청·데이터가 계층을 가로지르며 내려가는 경로. plan은 설계 흐름(+빠진 layer가 드러남), review는 변경 blast radius + layer별 오라클 커버리지(✅/⚠️). (강등된 `lens-flow`의 *이해* 가치가 여기서 시각화로 재사용됨.)
 - **lifecycle/meta 스킬**: `/cidd:auto`(목표→explore→…→review **자율 주행**; 전진=오라클 green, 멈춤=오라클 red·진짜 갈림길·시작 1회 동의 — 단계 기계는 그대로 재사용), `/cidd:status`(`.cidd/state.md` 읽기 전용 — 현재 stage·다음·막힌 이유), `/cidd:abort`(작업 폐기, 코드 미변경). **엔트리 라우터는 안 만든다**(Skill 설명 자동매칭이 그 역할).
-- 그 외 **`/cidd:abort`** — 진행 중 작업 폐기(lifecycle 관리, stage 아님; state·history 정리, 코드 미변경).
-
 ## 에이전트 (lens 라이브러리 + 기계)
 - **plan lens (9)**: 상시 `lens-structure` `lens-feature` `lens-failure` `lens-testability` `lens-scope` + task-gated `lens-security` `lens-operability` `lens-cost` + `lens-flow`(data/control/state — 검증 2회 고유 0, 기본 선택 제외·수동 전용)
 - **review lens (7)**: `rlens-maintainability` `rlens-convention` `rlens-failure-mode` `rlens-abstraction-fit` `rlens-security-logic` `rlens-readability` `rlens-simplicity`(우발적 복잡도/리팩토링 — 메트릭이 카운트, lens는 essential/accidental 판정)
 - **explore 기계**: `approach-generator`(stance별 독립 발산), `approach-judge`(judge-panel 비교·종합)
 - **plan 기계**: `friction-extractor`, `plan-reviser`, `completeness-critic`
 - **build 기계**: `builder`(unit 구현+repair, 코드 생성이라 capable 모델 상속), `build-conformance`(adversarial plan-일치+green-적정성, haiku), `build-judge`(judge-panel, haiku)
-- **오라클 기계**: `oracle-runner`(test/type/lint/build + coverage/mutation/complexity/duplication을 detect→실행→파싱→구조화; 없는 도구는 "미측정"; **sonnet 고정** — haiku는 없는 도구 metric을 *환각*, opus는 하드케이스서 우위 불확인[실측]). build·review가 호출해 게이트·`rlens-simplicity` 입력에 먹임.
+- **오라클 기계**: `oracle-runner`(test/type/lint/build + coverage/mutation/complexity/duplication을 detect→실행→파싱→구조화; 없는 도구는 "미측정"; **sonnet 고정** — 약한 모델은 없는 도구의 metric을 *환각*하기 때문). build·review가 호출해 게이트·`rlens-simplicity` 입력에 먹임.
 - lens는 *나열*이 아니라 매 run 3~5개 *도출*(oracle-subtraction · task-relevance · diversity).
 
 ## 단계 상태 (lifecycle 척추)
@@ -84,18 +82,16 @@ updated: <date>        # 모델은 날짜를 못 만듦 — 세션이 박는다
 Claude Code `Agent` 도구로 동작. 서브에이전트 모델은 작업에 맞춰 haiku(grounded·enumeration) / sonnet(grounding 없는 판단) / 상속(코드생성), low effort.
 
 ```bash
-# A. 로컬 dev 로드 — 세션 시작 시에만 적용, 재시작 필요
-claude --plugin-dir /path/to/collective-intelligence-driven-development
+# 설치 (GitHub) — 이 repo가 자체 마켓플레이스를 포함한다
+/plugin marketplace add pdev-jay/cidd-cc
+/plugin install cidd@cidd-cc
+/reload-plugins                 # 재시작 없이 현재 세션에 적용
 
-# B. 상시 설치(영속, 권장) — GitHub 카탈로그 경유:
-#   /plugin marketplace add pdev-jay/plugins
-#   /plugin install cidd@pdev-jay
-#   /reload-plugins        ← 재시작 없이 이 세션에 적용됨(실측). --plugin-dir 만 세션 시작 시 한정.
+# 또는 로컬 dev (소스 라이브 로드 — 세션 시작 시 플래그)
+claude --plugin-dir /path/to/cidd-cc
 ```
 
-로드되면:
-- 스킬: `/cidd:plan-friction-loop`, `/cidd:review-oracle-first` (또는 Claude가 맥락으로 자동 호출)
-- 서브에이전트: `cidd:lens-structure`, `cidd:rlens-maintainability` … `/agents`에 등록
+설치되면 `/cidd:*` 스킬 7 + `cidd:*` 서브에이전트 25가 등록된다(`/help`·`/agents`에서 확인). 슬래시로 부르거나("`/cidd:plan-friction-loop`") 자연어로 맥락 자동 호출된다("이 plan 마찰 검토해줘", "이 변경 리뷰해줘", "알아서 끝까지").
 
 출력은 대상 프로젝트 cwd의 `.cidd/`에 모인다 — 결과물 `.cidd/explorations/`·`.cidd/plans/`·`.cidd/builds/`·`.cidd/reviews/`(써먹는 산출물; build은 코드 변경은 repo에, 리포트는 builds/), 과정 로그 `.cidd/runs/`(감사·dogfooding). 단계 연결: explore `explorations/<slug>.md`(초안) → plan friction이 `plans/<slug>.md`로 다듬음 → build이 소비·diff 생성 → review가 그 diff에 오라클. 네임스페이스라 남의 repo와 충돌 없음, `.gitignore`에 `.cidd/` 한 줄.
 

@@ -1,0 +1,12 @@
+{
+  "name": "cidd-cc",
+  "owner": { "name": "pdev-jay" },
+  "description": "CIDD — collective-intelligence-driven development plugin for Claude Code.",
+  "plugins": [
+    {
+      "name": "cidd",
+      "source": "./",
+      "description": "오라클 가용성에 따라 단계마다(explore·plan·build·review) 모양이 다른 멀티에이전트 개발 플러그인."
+    }
+  ]
+}
