@@ -20,7 +20,7 @@ review는 plan과 다르다 — **오라클이 풍부**하다. 그래서 lens가
 
 ## 규모 적응 (먼저)
 review에서 **하드 오라클은 규모 무관 항상 최대**로 — 게이트이자 제일 싼 안전망이다. 줄이는 건 lens(advisory) 개수뿐.
-- **state.md profile 우선**, 없으면 자가 판정.
+- **규모는 state.md에서 먼저 읽어라(요청보다 우선)**: `handoff.build→review`의 `adequacy 미측정 unit·conformance 우려`가 *오라클 약한 지점* = lens 유지·집중할 곳을 직접 가리킨다(build이 약하다고 자백한 곳). profile 라벨은 출발점, 실제 diff 범위로 정련. 없으면 자가 판정(diff 범위·위험 표면·coverage).
 - **lens 개수 = 방향/위험 따라**: micro(작고 되돌리기 쉽고 변경 라인 테스트 덮음) → lens 0~1 / standard → 3~5.
 - ⚠️ **변경 라인이 테스트에 안 덮였으면(오라클 약함) lens를 줄이지 마라** — 그게 유일한 advisory 안전망. coverage 공백을 GATE에 명시.
 - ⚠️ **오류비용 큰 변경**(auth·권한·민감데이터 등)이면 규모 작아도 `rlens-security-logic` 유지(task-gating이 이미 켬).
