@@ -97,6 +97,7 @@ active: <slug>
 status:  active | paused | abandoned
 target_repo: <path>
 stage:  explore | plan | build | review | done   # = 여기까지 *승인*됨(다음이 열림). 강제 아님 — ratchet 아니다.
+profile: micro | small | standard | high-risk | -   # 규모 triage 결과 — 각 단계가 폭/게이트 결정에 읽음(auto가 박음, 단독 호출이면 단계가 자가 판정). 번복 시 갱신.
 explore: done → .cidd/explorations/<slug>.md  |  -
 plan:   done → .cidd/plans/<slug>.md   |  -
 build:  in-progress | done → .cidd/builds/<slug>.md (diff: <ref>)  |  -
@@ -131,6 +132,14 @@ updated: <date>        # 모델은 날짜를 못 만듦 — 세션이 박는다
 
 ## 인라인 출력 형태
 인라인(대화) 출력은 **결과물 우선** — 그 단계 산출물(explore=방향·초안 / plan=결론 plan / build=빌드 상태 / review=머지 판정)을 다이어그램+핵심으로 보여주고, 과정(라운드·후보·repair raw)은 단계 파일(`runs`/`explorations`/`builds`/`reviews`)로 강등한다. 진짜 fork/트레이드오프가 남으면 "결정 포인트"로 묻는다. 평이어(내부용어는 ≤6단어로 풀기)·신호밀도(장식기호·과압축 금지)·적응형(빈 섹션 생략) 게이트. **규약 본문은 각 스킬 출력 절이 contained로 담는다** — 스킬은 런타임에 README를 로드하지 않으므로 참조가 아니라 내장이다.
+
+## 작업 규모 적응 (가볍게/무겁게)
+작은 작업(한 줄 수정·필드 추가·rename)에 풀 파이프라인은 과하다. CIDD는 규모에 맞춰 무게를 **자동** 조절한다 — 시작에 메인 에이전트가 값싸게 판정(서브에이전트 없음): ① 방향 뻔한가 ② 틀리면 위험한가 ③ 테스트 있나. 셋이 *다른* 다이얼을 움직인다:
+- **방향 불확실성 → 심의**(explore·lens·라운드·judge). 뻔하면 0까지 접는다 — 비용 대부분이 여기서 빠진다.
+- **오류비용×범위 → 검증 게이트**(conformance·security). 작아도 위험하면(auth·schema·결제·동시성·BLE/프로토콜 등) 유지·승격.
+- **오라클 강도 → 심의 바닥**. 테스트 없으면 "green"이 거짓 안심이라 심의를 안 줄이거나 특성 테스트부터 세운다.
+
+profile: **micro / small / standard / high-risk**. ⚠️ **검증(하드 오라클·머지 게이트)은 어느 규모서도 생략 불가 — "가볍게"가 "검증 없이"가 되면 안 된다.** 진행 중 영향이 커지면 올린다(내리는 건 보수적). `auto`는 단계 건너뛰기까지 자동, 단독 호출 단계는 자기 폭을 스스로 접는다.
 
 ## 핵심 원칙 (요약)
 1. 오라클 비대칭 — plan은 lens 주력, review는 오라클 주력.

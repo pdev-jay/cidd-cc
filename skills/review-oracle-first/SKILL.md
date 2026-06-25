@@ -18,6 +18,14 @@ review는 plan과 다르다 — **오라클이 풍부**하다. 그래서 lens가
 ## 단계 상태 (lifecycle 척추)
 **진입 시** 대상 repo의 `.cidd/state.md`에서 `build: done`인 active slug의 build 리포트·diff를 읽는다(있으면). `handoff.build→review`에 적힌 "adequacy 미측정 / conformance 우려" unit에 **오라클·lens를 우선 겨눈다**(build이 약하다고 자백한 곳). build 없이 직접 호출된 diff면 그냥 진행. **완료 시** 갱신: `review: done → .cidd/reviews/<slug>.md`, `gate: pass|fail`. **끝나면 `AskUserQuestion` 결정 메뉴(accept/refine/back/pause/abandon)로 고른 전이를 자동 적용**(README "단계 끝 = 결정 메뉴") — accept면 gate pass 시 `stage: done`(+ history), fail이면 refine/back. (`updated`는 세션이 박음.)
 
+## 규모 적응 (먼저)
+review에서 **하드 오라클은 규모 무관 항상 최대**로 — 게이트이자 제일 싼 안전망이다. 줄이는 건 lens(advisory) 개수뿐.
+- **state.md profile 우선**, 없으면 자가 판정.
+- **lens 개수 = 방향/위험 따라**: micro(작고 되돌리기 쉽고 변경 라인 테스트 덮음) → lens 0~1 / standard → 3~5.
+- ⚠️ **변경 라인이 테스트에 안 덮였으면(오라클 약함) lens를 줄이지 마라** — 그게 유일한 advisory 안전망. coverage 공백을 GATE에 명시.
+- ⚠️ **오류비용 큰 변경**(auth·권한·민감데이터 등)이면 규모 작아도 `rlens-security-logic` 유지(task-gating이 이미 켬).
+- **GATE(머지 판정)는 어느 규모서도 생략 불가.** 번복: 영향 커지면 lens 올림.
+
 ## 절차
 1. **① Hard oracle (먼저) — `cidd:oracle-runner` 호출.** 변경 파일/diff 범위를 넘기면 runner가 test/type/lint/build를 *실제 실행·인용*해 구조화 리포트로 돌려준다(추측 아님; 없는 도구는 "미측정 + 이유"). 하드 실패 목록이 1차 게이트 결과 = 머지 차단 사유.
 2. **② Oracle-extension — 같은 runner 리포트의 확장부.** coverage(변경 라인 미덮이면 "초록불 불충분"), mutation("옳은 이유로 green인지"), complexity/duplication 린터(radon·lizard·eslint-complexity·jscpd). 없는 축은 runner가 "adequacy 미측정 + 이유"로 표시 — 거짓 안심 금지. complexity/duplication 후보는 `rlens-simplicity`가 소비한다(카운트는 runner의 오라클 몫, 본질/우발 판정은 lens 몫 — 오라클 빼기).
