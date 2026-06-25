@@ -22,6 +22,40 @@
 - **review-oracle-first**: ① 하드 오라클 실행(test/type/lint) → ② oracle-extension(coverage/mutation) → ③ review-lens는 ①②가 *구조적으로 못 보는 것만* advisory. **lens는 절대 머지 게이트가 아니다.**
 - plan·build·review 출력은 **맨 위에 layer 통과 flow ASCII 다이어그램** — layer(Route/Service/Infra/External/Worker…)를 왼쪽 축으로, 요청·데이터가 계층을 가로지르며 내려가는 경로. plan은 설계 흐름(+빠진 layer가 드러남), review는 변경 blast radius + layer별 오라클 커버리지(✅/⚠️). (강등된 `lens-flow`의 *이해* 가치가 여기서 시각화로 재사용됨.)
 - **lifecycle/meta 스킬**: `/cidd:auto`(목표→explore→…→review **자율 주행**; 전진=오라클 green, 멈춤=오라클 red·진짜 갈림길·시작 1회 동의 — 단계 기계는 그대로 재사용), `/cidd:status`(`.cidd/state.md` 읽기 전용 — 현재 stage·다음·막힌 이유), `/cidd:abort`(작업 폐기, 코드 미변경). **엔트리 라우터는 안 만든다**(Skill 설명 자동매칭이 그 역할).
+## 작동 시나리오
+
+```
+요청 / 목표
+   │
+   ▼
+[ .cidd/state.md ]  척추 — stage × status + 단계 간 handoff
+   │   /cidd:auto면 자동 주행: 전진 = 오라클 green / 멈춤 = 오라클 red · 진짜 갈림길
+   ▼
+[ explore ]   오라클 없음 · 발산
+   │   approach-generator ×N (독립 stance) → approach-judge → 초안 plan
+   ├─ 결정 메뉴: accept→다음 / refine→재실행 / back / pause / abandon
+   ▼
+[ plan ]      오라클 빈곤 · 마찰
+   │   lens 3~5개 병렬 → friction-extractor → plan-reviser
+   │   ↺ loop-until-dry → completeness-critic  → 다듬은 plan
+   ├─ 결정 메뉴
+   ▼
+[ build ]     오라클 최대 · 생성-검증-repair
+   │   foundation → 독립 unit 병렬 (builder)
+   │   → oracle-runner(green?) → conformance(옳은 이유로 green?)
+   │   red면 repair · 게이트 통과해야 done  → 코드 + diff
+   ├─ 결정 메뉴
+   ▼
+[ review ]    오라클 풍부 · oracle-first
+   │   oracle-runner = hard(test/type/lint) + adequacy(coverage/mutation/complexity)  ← GATE
+   │   review-lens는 advisory만 (게이트 아님)  → 리뷰 리포트
+   │   gate pass
+   ▼
+[ done ]      history 기록
+
+축: lens proposes → oracle disposes.  오라클이 없을수록 lens/judge가, 풍부할수록 오라클이 판정한다.
+```
+
 ## 에이전트 (lens 라이브러리 + 기계)
 **plan lens (9)** — 오라클 빈곤이라 lens가 주력(마찰). 매 run 3~5개만 *도출*:
 
