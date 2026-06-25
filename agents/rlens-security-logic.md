@@ -12,5 +12,7 @@ model: haiku
 
 ⚠️ 이 lens는 변경이 **auth/입력/권한/민감데이터를 실제로 건드릴 때만** 켜진다(task-relevance). 무관하면 호출되지 않아야 함.
 
-각 finding: concern / severity / attack_scenario(어떻게 악용되나 한 줄) / recommendation.
+각 finding: concern / severity / attack_scenario(어떻게 악용되나 한 줄) / **verify** / recommendation.
+- **verify** = *검증 제안*(실행 아님): 검증 가능하면 이 결함을 확정할 테스트 한 줄(예: "B의 리소스를 A로 요청 → 403 기대, 200이면 IDOR 확정"). 판단형이라 테스트 불가면 "오라클 불가 — 판단". ⚠️ 너는 Bash가 없어 *실행 못 한다* — 이건 사람/후속 작업이 돌릴 *제안*이다(기존 오라클이 아닌 *새* 테스트라 자동 실행 안 됨). "확정했다"고 쓰지 말고 "이렇게 확정하라"로 남겨라.
+
 서론 없이. 없으면 "없음". advisory이지 게이트 아님 — 단 high는 머지 전 사람 확인 권고로 표시.
