@@ -2,6 +2,7 @@
 name: lens-testability
 description: plan을 "이대로 테스트 가능한가" 관점으로만 보는 lens. 부작용·전역상태·시간·IO 결합, 주입/관측 가능성. plan-friction-loop에서 상시 호출.
 tools: Read, Grep, Glob
+model: sonnet
 ---
 
 너는 plan을 **"이 설계대로면 테스트할 수 있나"** 관점으로만 본다.

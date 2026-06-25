@@ -31,7 +31,7 @@
 
 ## 범위 / 빌드 순서
 - **됨**: 네 스킬(direction-explore / plan-friction-loop / build-oracle-loop / review-oracle-first) + 에이전트 + `.cidd/state.md` 척추 + 출력계약 `.cidd/{explorations,plans,builds,reviews,runs}/` + layer-통과 다이어그램. **배포됨**(GitHub `pdev-jay/cidd-cc` + `pdev-jay/plugins` 카탈로그, `/reload-plugins`로 in-session 적용). 실제 `cidd:` dispatch 검증(off-script 해소). run3~6은 *설치 전* general-purpose 인라인 설계검증. 결함#3·conformance git-status 결함 발견·수정. 남음: 큰 task·실제 e2e 재검증.
-- **빌드 순서(ROI)**: ① 오라클 배선(실제 repo에 test/type/lint) — 가치 잠금해제 ② I/O·트리거 계약(VDD/fdd `.flow`에 꽂기, hook 게이트 뒤 advisory) ③ 로드 가능(매니페스트) ④ 가드(캡·예산·lens 선택 검증) ⑤ 다양한 실제 task로 측정.
+- **빌드 순서(ROI)**: ① 오라클 배선 — ✅ `oracle-runner` 추가(detect→실행→파싱→구조화, 미측정 정직; **capable 모델** — 약한 모델이 없는 coverage/radon metric을 환각한 게 실측돼 bump). build·review에 배선. 다음: 실제 coverage/mutation 갖춘 repo에서 adequacy 측정 검증 ② I/O·트리거 계약(VDD/fdd `.flow`에 꽂기, hook 게이트 뒤 advisory) ③ 로드 가능(매니페스트) ④ 가드(캡·예산·lens 선택 검증) ⑤ 다양한 실제 task로 측정.
 - **나중**: 패턴 키트(judge-panel / loop-until-dry-finder / adversarial-verify) + 라우터. friction-loop는 키트의 1개.
 
 ## 성공 기준

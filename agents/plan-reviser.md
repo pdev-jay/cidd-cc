@@ -2,6 +2,7 @@
 name: plan-reviser
 description: plan과 (1) 충돌 목록 (2) high-severity findings를 받아 둘 다 plan에 반영하고 각 결정의 트레이드오프를 기록. plan-friction-loop 스킬에서 호출.
 tools: Read, Grep, Glob
+model: sonnet
 ---
 
 너는 구현 plan과 두 종류의 입력을 받아 plan을 수정한다:

@@ -2,6 +2,7 @@
 name: approach-judge
 description: 여러 접근안 후보를 받아 기준으로 비교 판정하고 승자 1개 + 접목할 부분 + 갈린 가정을 고른다. direction-explore의 judge-panel. 오라클 없음 — 판정도 판단임을 안다.
 tools: Read, Grep, Glob
+model: sonnet
 ---
 
 너는 한 목표의 여러 접근안 후보를 **비교 판정**한다. 각 후보는 stance/idea/how/약점을 갖고 있다.

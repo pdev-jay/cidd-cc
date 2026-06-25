@@ -2,6 +2,7 @@
 name: lens-structure
 description: plan을 "프로젝트 구조/아키텍처" lens로만 검토하는 서브에이전트. 판정 기준은 "이 plan이 변경 비용을 어디에 쌓는가". plan 단계에서 결정 가능한 두 규칙(R1 벌지 않은 seam, R2 지역성)을 변경비용 게이트로 적용. plan-friction-loop 스킬에서 fan-out으로 호출.
 tools: Read, Grep, Glob
+model: sonnet
 ---
 
 너는 구현 plan을 **프로젝트 구조/아키텍처 관점으로만** 검토한다.

@@ -29,6 +29,7 @@
 - **explore 기계**: `approach-generator`(stance별 독립 발산), `approach-judge`(judge-panel 비교·종합)
 - **plan 기계**: `friction-extractor`, `plan-reviser`, `completeness-critic`
 - **build 기계**: `builder`(unit 구현+repair, 코드 생성이라 capable 모델 상속), `build-conformance`(adversarial plan-일치+green-적정성, haiku), `build-judge`(judge-panel, haiku)
+- **오라클 기계**: `oracle-runner`(test/type/lint/build + coverage/mutation/complexity/duplication을 detect→실행→파싱→구조화; 없는 도구는 "미측정"; **sonnet 고정** — haiku는 없는 도구 metric을 *환각*, opus는 하드케이스서 우위 불확인[실측]). build·review가 호출해 게이트·`rlens-simplicity` 입력에 먹임.
 - lens는 *나열*이 아니라 매 run 3~5개 *도출*(oracle-subtraction · task-relevance · diversity).
 
 ## 단계 상태 (lifecycle 척추)
@@ -98,7 +99,7 @@ claude --plugin-dir /path/to/collective-intelligence-driven-development
 출력은 대상 프로젝트 cwd의 `.cidd/`에 모인다 — 결과물 `.cidd/explorations/`·`.cidd/plans/`·`.cidd/builds/`·`.cidd/reviews/`(써먹는 산출물; build은 코드 변경은 repo에, 리포트는 builds/), 과정 로그 `.cidd/runs/`(감사·dogfooding). 단계 연결: explore `explorations/<slug>.md`(초안) → plan friction이 `plans/<slug>.md`로 다듬음 → build이 소비·diff 생성 → review가 그 diff에 오라클. 네임스페이스라 남의 repo와 충돌 없음, `.gitignore`에 `.cidd/` 한 줄.
 
 ## 상태
-> ✅ **배포됨(2026-06-25)** — GitHub `pdev-jay/cidd-cc` + `pdev-jay/plugins` 카탈로그 경유 `/plugin install cidd@pdev-jay` + `/reload-plugins`로 **재시작 없이 in-session 적용**(설치엔 재시작 필수라는 통념은 실측 반증). `/cidd:*` 스킬 5 + `cidd:*` 에이전트 24 호출 가능. 실제 `cidd:lens-structure` dispatch 검증: resolve + on-task + tool 제한(Bash 없음)으로 **off-script 사라짐** — general-purpose 인라인이 3회 빗나갔던 근본 해소.
+> ✅ **배포됨(2026-06-25)** — GitHub `pdev-jay/cidd-cc` + `pdev-jay/plugins` 카탈로그 경유 `/plugin install cidd@pdev-jay` + `/reload-plugins`로 **재시작 없이 in-session 적용**(설치엔 재시작 필수라는 통념은 실측 반증). `/cidd:*` 스킬 5 + `cidd:*` 에이전트 25 호출 가능. 실제 `cidd:lens-structure` dispatch 검증: resolve + on-task + tool 제한(Bash 없음)으로 **off-script 사라짐** — general-purpose 인라인이 3회 빗나갔던 근본 해소.
 
 - 설계 검증됨(설치 전, general-purpose 인라인): plan friction-loop(run3~5: lens 한계커버리지·flow 강등·layer 다이어그램·결함#3), build gen-verify-repair + review oracle-first + `.cidd/state.md` 척추(run6 e2e on scratch repo). 도중 conformance git-status 결함 발견·수정.
 - 미검증(이제 실제 dispatch로 가능): 실제 `cidd:` 에이전트로 e2e 재현, 큰/모호 task 분해, coverage/mutation adequacy, 라우터.
