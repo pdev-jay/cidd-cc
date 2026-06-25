@@ -58,7 +58,7 @@ consolidated diff + build 리포트를 만들어 `review-oracle-first`의 입력
 ## 출력 — `.cidd/builds/<slug>.md` + 실제 코드
 - 코드 변경은 repo에.
 - 리포트(파일): unit별 [무엇 구현 / 오라클 결과 / conformance 판정 / judge 결정] + 전체 오라클 결과 + diff 요약 + 남은 갭. → review 입력.
-- 인라인(대화): **layer 다이어그램에 unit별 상태 오버레이**(✅ green+conformance통과 / 🔧 repair중·미green / ⚠️ 오라클 없음) + 리포트 경로.
+- 인라인(대화) — 결과물 우선, 과정은 파일로. 순서: 리드(1줄) → **결과물 = 빌드 상태**(**layer 다이어그램에 unit별 상태 오버레이** ✅ green+conformance / 🔧 미green / ⚠️ 오라클 없음 + 전체 하드 한 줄: pass/fail·adequacy 또는 "미측정") → 결정 포인트(conformance fail·미green unit이 사람 판단 필요할 때만) → 파일 포인터. ⚠️ **unit별 repair/judge 상세는 인라인 말고 builds 파일로**(→ 경로 한 줄). 게이트: 평이어·장식기호 금지·빈 섹션 생략.
 
 ## build-conformance vs review 경계 (중복 금지)
 - **build-conformance**: *mid-build · per-unit · plan 대비* — "계획한 걸 만들었나 + 이 unit의 green이 믿을 만한가"(plan-conformance + local adequacy). **필요조건이지 충분조건 아님.**

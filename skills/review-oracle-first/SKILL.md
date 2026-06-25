@@ -23,7 +23,7 @@ review는 plan과 다르다 — **오라클이 풍부**하다. 그래서 lens가
 2. **② Oracle-extension — 같은 runner 리포트의 확장부.** coverage(변경 라인 미덮이면 "초록불 불충분"), mutation("옳은 이유로 green인지"), complexity/duplication 린터(radon·lizard·eslint-complexity·jscpd). 없는 축은 runner가 "adequacy 미측정 + 이유"로 표시 — 거짓 안심 금지. complexity/duplication 후보는 `rlens-simplicity`가 소비한다(카운트는 runner의 오라클 몫, 본질/우발 판정은 lens 몫 — 오라클 빼기).
 3. **③ Lens fan-out (advisory).** review-lens를 3축(oracle-subtraction·task-relevance·diversity)으로 **3~5개 선택**해 병렬 호출(`Agent`, haiku). 각 lens는 ①②가 못 보는 것만. failure-mode lens가 의심 지점을 내면 *판정하지 말고* ②(테스트/mutation)로 내려 확인 — **lens proposes, oracle disposes.**
 4. **④ (선택) 정리.** `completeness-critic`으로 어느 축도 안 본 사각지대. lens findings 간 긴장은 `friction-extractor`로 묶어도 됨(advisory).
-5. **출력 = 리뷰 리포트.** 사용자에게 인라인으로 보여주고, **`.cidd/reviews/<slug>.md`에 저장**한다(`<slug>` = PR/브랜치/변경 이름, 없으면 `<날짜>-<n>`). 리포트가 머지 판정의 근거 기록이므로 파일로 남긴다. 인라인·파일 둘 다 같은 내용.
+5. **출력 = 리뷰 리포트.** **`.cidd/reviews/<slug>.md`에 전체 저장**(`<slug>` = PR/브랜치/변경 이름, 없으면 `<날짜>-<n>`) — 머지 판정의 근거 기록. 아래 다이어그램·GATE·ADVISORY는 *파일(리포트)* 구조다. **인라인은 결과물 우선, 과정은 파일로** — 순서: 리드(1줄) → **결과물 = 머지 판정(GATE)**(다이어그램 맨 위 + GATE: 하드 pass/fail·adequacy 또는 "미측정"·실행출력 인용) → ADVISORY는 **high만 한 줄씩**(전체 lens findings는 파일로) → 게이트 fail이면 결정 포인트(무엇이 막나 + 무엇 고치면 풀리나). 게이트: 평이어·장식기호 금지·빈 섹션 생략.
    - **다이어그램(필수, 리포트 맨 위) = layer 통과 flow**: 변경이 닿는 경로를 **계층(layer)을 가로지르는 flow**로 그려라(네가 직접). 왼쪽 축에 layer 라벨(`[Route] [Service] [Infra] [External] [Worker]` 등), flow는 위→아래로 layer를 가로지르며 내려간다(화살표에 무엇이 흐르나 라벨). 변경 노드 `*` + 그 노드를 쓰는 소비자(blast radius)까지. **각 노드에 오라클 상태**: `✅`(테스트 덮음) / `⚠️`(미덮임·미측정). 오라클 공백이 *어느 layer*에 있는지 그림에서 바로 보인다.
      ```
      예)
