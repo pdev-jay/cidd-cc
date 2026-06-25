@@ -5,7 +5,7 @@ description: 승인된 plan을 구현할 때, layer 다이어그램에서 work-u
 
 # build-oracle-loop
 
-build은 plan·review와 **다르다 — 오라클이 셋 중 최대**다. 코드를 짜는 즉시 test/type/build를 그 산출물에 돌릴 수 있다. 그래서 build은 *심의(deliberation)* 문제가 아니라 **generate → verify → repair** 문제다. (배경: `GOAL.md` 원칙 1)
+build은 plan·review와 **다르다 — 오라클이 셋 중 최대**다. 코드를 짜는 즉시 test/type/build를 그 산출물에 돌릴 수 있다. 그래서 build은 *심의(deliberation)* 문제가 아니라 **generate → verify → repair** 문제다.
 
 ## 절대 규칙
 - **plan의 lens-friction을 build에 얹지 마라.** 코드는 오라클이 판정한다. 마찰은 *plan*이 아니라 *구현*에 대해서만 건다(conformance 게이트 / judge-panel). plan에 대한 lens-fan-out을 여기서 반복하면 오라클이 제일 센 단계에서 오라클-비대칭 실수를 되풀이하는 것이다.

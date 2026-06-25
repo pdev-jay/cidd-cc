@@ -2,7 +2,7 @@
 
 여러 관점(lens)이 **마찰**로 수렴하는 변증법적 심의를 개발의 plan·review 단계에 끼워 넣는 Claude Code 플러그인. 단일 LLM 의견의 누락·편향을 줄이되, **결정적 신호(오라클: test/type/compile/run)가 있는 곳에선 lens가 그 위에 군림하지 않게** 한다.
 
-전체 설계·원칙·안티골은 [`GOAL.md`](./GOAL.md).
+핵심 원칙: **lens는 절대 게이트가 아니다(수렴 ≠ 검증)** — 오라클(test/type/compile/run)이 있는 곳에선 오라클이 판정하고 lens는 advisory다. 오케스트레이션 모양은 단계별 오라클 가용성을 따른다(아래 표).
 
 ## 개념 (오해 금지)
 - 집단지성 = wisdom-of-crowds(독립 추정 *집계*)가 **아니다.** 같은 수준 에이전트가 lens별로 검토 → 충돌 → 수정으로 수렴하는 **dialectic deliberation**. 엔진은 투표가 아니라 *반박*.
@@ -21,7 +21,7 @@
 - **build-oracle-loop**: layer 다이어그램 → work-unit 도출(공유 artifact=foundation 먼저 순차, 진짜 독립만 병렬 — *layer hop ≠ 독립 unit*) → builder 병렬 구현(worktree) → green까지 repair → unit별 **adversarial conformance**(plan 일치 + 옳은 이유로 green) → hard unit judge-panel → 전체 오라클 통합 → review handoff. **plan의 lens-friction을 여기 얹지 않는다**(오라클이 엔진).
 - **review-oracle-first**: ① 하드 오라클 실행(test/type/lint) → ② oracle-extension(coverage/mutation) → ③ review-lens는 ①②가 *구조적으로 못 보는 것만* advisory. **lens는 절대 머지 게이트가 아니다.**
 - plan·build·review 출력은 **맨 위에 layer 통과 flow ASCII 다이어그램** — layer(Route/Service/Infra/External/Worker…)를 왼쪽 축으로, 요청·데이터가 계층을 가로지르며 내려가는 경로. plan은 설계 흐름(+빠진 layer가 드러남), review는 변경 blast radius + layer별 오라클 커버리지(✅/⚠️). (강등된 `lens-flow`의 *이해* 가치가 여기서 시각화로 재사용됨.)
-- **lifecycle/meta 스킬**: `/cidd:auto`(목표→explore→…→review **자율 주행**; 전진=오라클 green, 멈춤=오라클 red·진짜 갈림길·시작 1회 동의 — 단계 기계는 그대로 재사용), `/cidd:status`(`.cidd/state.md` 읽기 전용 — 현재 stage·다음·막힌 이유), `/cidd:abort`(작업 폐기, 코드 미변경). **엔트리 라우터는 안 만든다**(Skill 설명 자동매칭이 그 역할, GOAL).
+- **lifecycle/meta 스킬**: `/cidd:auto`(목표→explore→…→review **자율 주행**; 전진=오라클 green, 멈춤=오라클 red·진짜 갈림길·시작 1회 동의 — 단계 기계는 그대로 재사용), `/cidd:status`(`.cidd/state.md` 읽기 전용 — 현재 stage·다음·막힌 이유), `/cidd:abort`(작업 폐기, 코드 미변경). **엔트리 라우터는 안 만든다**(Skill 설명 자동매칭이 그 역할).
 - 그 외 **`/cidd:abort`** — 진행 중 작업 폐기(lifecycle 관리, stage 아님; state·history 정리, 코드 미변경).
 
 ## 에이전트 (lens 라이브러리 + 기계)
@@ -81,7 +81,7 @@ updated: <date>        # 모델은 날짜를 못 만듦 — 세션이 박는다
 4. 오라클 3계층: hard / extension / lens. 하드가 보는 걸 lens로 중복 금지.
 
 ## 설치 / 사용
-크레딧 0 — Claude Code `Agent` 도구(구독)로 동작. 서브에이전트 haiku + low effort.
+Claude Code `Agent` 도구로 동작. 서브에이전트 모델은 작업에 맞춰 haiku(grounded·enumeration) / sonnet(grounding 없는 판단) / 상속(코드생성), low effort.
 
 ```bash
 # A. 로컬 dev 로드 — 세션 시작 시에만 적용, 재시작 필요
