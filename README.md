@@ -23,8 +23,31 @@
 - plan·build·review 출력은 **맨 위에 layer 통과 flow ASCII 다이어그램** — layer(Route/Service/Infra/External/Worker…)를 왼쪽 축으로, 요청·데이터가 계층을 가로지르며 내려가는 경로. plan은 설계 흐름(+빠진 layer가 드러남), review는 변경 blast radius + layer별 오라클 커버리지(✅/⚠️). (강등된 `lens-flow`의 *이해* 가치가 여기서 시각화로 재사용됨.)
 - **lifecycle/meta 스킬**: `/cidd:auto`(목표→explore→…→review **자율 주행**; 전진=오라클 green, 멈춤=오라클 red·진짜 갈림길·시작 1회 동의 — 단계 기계는 그대로 재사용), `/cidd:status`(`.cidd/state.md` 읽기 전용 — 현재 stage·다음·막힌 이유), `/cidd:abort`(작업 폐기, 코드 미변경). **엔트리 라우터는 안 만든다**(Skill 설명 자동매칭이 그 역할).
 ## 에이전트 (lens 라이브러리 + 기계)
-- **plan lens (9)**: 상시 `lens-structure` `lens-feature` `lens-failure` `lens-testability` `lens-scope` + task-gated `lens-security` `lens-operability` `lens-cost` + `lens-flow`(data/control/state — 검증 2회 고유 0, 기본 선택 제외·수동 전용)
-- **review lens (7)**: `rlens-maintainability` `rlens-convention` `rlens-failure-mode` `rlens-abstraction-fit` `rlens-security-logic` `rlens-readability` `rlens-simplicity`(우발적 복잡도/리팩토링 — 메트릭이 카운트, lens는 essential/accidental 판정)
+**plan lens (9)** — 오라클 빈곤이라 lens가 주력(마찰). 매 run 3~5개만 *도출*:
+
+| lens | 보는 것 | 켜기 |
+|---|---|---|
+| `lens-structure` | 변경 비용을 어디 쌓나 — 벌지 않은 seam(과/미설계)·한 개념의 분산(지역성) | 상시 |
+| `lens-feature` | 기능 완결성 — happy path·엣지·에러 처리·빠진 단계 | 상시 |
+| `lens-failure` | 무엇이 깨지나 — 경계값·실패 경로·예외·동시 접근 | 상시 |
+| `lens-testability` | 이대로 테스트 가능한가 — 부작용·전역상태·시간/IO 결합, 주입·관측 | 상시 |
+| `lens-scope` | 과/미설계(YAGNI) — 요청 안 한 추상·빠진 핵심 단계 | 상시 |
+| `lens-security` | 신뢰 못 할 입력·권한·인증·민감데이터 | auth/입력 닿을 때 |
+| `lens-operability` | 롤백·마이그레이션·배포·운영 영향 | 배포 영향 있을 때 |
+| `lens-cost` | 성능·자원 — 핫패스·N+1·재계산·캐시 | 성능 민감할 때 |
+| `lens-flow` | data/control/state 흐름이 옳은가/위험한가 | 수동(기본 제외 — 비평보다 이해 도구) |
+
+**review lens (7)** — 오라클 풍부라 lens는 advisory only(게이트 아님):
+
+| lens | 보는 것 | 켜기 |
+|---|---|---|
+| `rlens-maintainability` | 6개월 뒤 고칠 사람 — 가독성·네이밍·숨은 결합·암묵 가정 | 상시 |
+| `rlens-convention` | 기존 코드 패턴·관용구와 일치하나 | repo 필수 |
+| `rlens-failure-mode` | 초록불이 옳은 이유로 초록인가 (의심만 → 오라클이 판정) | 상시 |
+| `rlens-abstraction-fit` | 추상·경계가 옳은가 — 삭제 테스트(얕은 모듈)·의존성 방향 | 상시(코드 필요) |
+| `rlens-security-logic` | SAST가 못 잡는 로직 수준 권한 | auth/입력 닿을 때 |
+| `rlens-readability` | 호출부/시그니처 인간공학 — 오용하기 어려운가 | 상시 |
+| `rlens-simplicity` | 필요 이상 복잡/긴 코드(우발적 복잡도) — 카운트는 메트릭, essential/accidental 판정은 lens | 상시 |
 - **explore 기계**: `approach-generator`(stance별 독립 발산), `approach-judge`(judge-panel 비교·종합)
 - **plan 기계**: `friction-extractor`, `plan-reviser`, `completeness-critic`
 - **build 기계**: `builder`(unit 구현+repair, 코드 생성이라 capable 모델 상속), `build-conformance`(adversarial plan-일치+green-적정성, haiku), `build-judge`(judge-panel, haiku)
