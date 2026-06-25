@@ -25,7 +25,7 @@
 
 ## 에이전트 (lens 라이브러리 + 기계)
 - **plan lens (9)**: 상시 `lens-structure` `lens-feature` `lens-failure` `lens-testability` `lens-scope` + task-gated `lens-security` `lens-operability` `lens-cost` + `lens-flow`(data/control/state — 검증 2회 고유 0, 기본 선택 제외·수동 전용)
-- **review lens (6)**: `rlens-maintainability` `rlens-convention` `rlens-failure-mode` `rlens-abstraction-fit` `rlens-security-logic` `rlens-readability`
+- **review lens (7)**: `rlens-maintainability` `rlens-convention` `rlens-failure-mode` `rlens-abstraction-fit` `rlens-security-logic` `rlens-readability` `rlens-simplicity`(우발적 복잡도/리팩토링 — 메트릭이 카운트, lens는 essential/accidental 판정)
 - **explore 기계**: `approach-generator`(stance별 독립 발산), `approach-judge`(judge-panel 비교·종합)
 - **plan 기계**: `friction-extractor`, `plan-reviser`, `completeness-critic`
 - **build 기계**: `builder`(unit 구현+repair, 코드 생성이라 capable 모델 상속), `build-conformance`(adversarial plan-일치+green-적정성, haiku), `build-judge`(judge-panel, haiku)
@@ -85,9 +85,9 @@ updated: <date>        # 모델은 날짜를 못 만듦 — 세션이 박는다
 # A. 로컬 dev 로드 — 세션 시작 시에만 적용, 재시작 필요
 claude --plugin-dir /path/to/collective-intelligence-driven-development
 
-# B. 상시 설치(영속, 권장) — 로컬 marketplace 경유. 부모 워크스페이스를 marketplace 루트로:
-#   /plugin marketplace add /Users/nucode/00_personal/00_claude_plugin
-#   /plugin install cidd@nucode-plugins
+# B. 상시 설치(영속, 권장) — GitHub 카탈로그 경유:
+#   /plugin marketplace add pdev-jay/plugins
+#   /plugin install cidd@pdev-jay
 #   /reload-plugins        ← 재시작 없이 이 세션에 적용됨(실측). --plugin-dir 만 세션 시작 시 한정.
 ```
 
@@ -98,7 +98,7 @@ claude --plugin-dir /path/to/collective-intelligence-driven-development
 출력은 대상 프로젝트 cwd의 `.cidd/`에 모인다 — 결과물 `.cidd/explorations/`·`.cidd/plans/`·`.cidd/builds/`·`.cidd/reviews/`(써먹는 산출물; build은 코드 변경은 repo에, 리포트는 builds/), 과정 로그 `.cidd/runs/`(감사·dogfooding). 단계 연결: explore `explorations/<slug>.md`(초안) → plan friction이 `plans/<slug>.md`로 다듬음 → build이 소비·diff 생성 → review가 그 diff에 오라클. 네임스페이스라 남의 repo와 충돌 없음, `.gitignore`에 `.cidd/` 한 줄.
 
 ## 상태
-> ✅ **설치됨(2026-06-24)** — `nucode-plugins` 로컬 marketplace 경유 `/plugin install cidd@nucode-plugins` + `/reload-plugins`로 **재시작 없이 in-session 적용**(설치엔 재시작 필수라는 통념은 실측 반증). `/cidd:*` 스킬 3 + `cidd:*` 에이전트 21 호출 가능. 실제 `cidd:lens-structure` dispatch 검증: resolve + on-task + tool 제한(Bash 없음)으로 **off-script 사라짐** — general-purpose 인라인이 3회 빗나갔던 근본 해소.
+> ✅ **배포됨(2026-06-25)** — GitHub `pdev-jay/cidd-cc` + `pdev-jay/plugins` 카탈로그 경유 `/plugin install cidd@pdev-jay` + `/reload-plugins`로 **재시작 없이 in-session 적용**(설치엔 재시작 필수라는 통념은 실측 반증). `/cidd:*` 스킬 5 + `cidd:*` 에이전트 24 호출 가능. 실제 `cidd:lens-structure` dispatch 검증: resolve + on-task + tool 제한(Bash 없음)으로 **off-script 사라짐** — general-purpose 인라인이 3회 빗나갔던 근본 해소.
 
 - 설계 검증됨(설치 전, general-purpose 인라인): plan friction-loop(run3~5: lens 한계커버리지·flow 강등·layer 다이어그램·결함#3), build gen-verify-repair + review oracle-first + `.cidd/state.md` 척추(run6 e2e on scratch repo). 도중 conformance git-status 결함 발견·수정.
 - 미검증(이제 실제 dispatch로 가능): 실제 `cidd:` 에이전트로 e2e 재현, 큰/모호 task 분해, coverage/mutation adequacy, 라우터.

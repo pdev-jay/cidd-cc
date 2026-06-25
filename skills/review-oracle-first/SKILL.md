@@ -20,7 +20,7 @@ review는 plan과 다르다 — **오라클이 풍부**하다. 그래서 lens가
 
 ## 절차
 1. **① Hard oracle (먼저, Bash로 실제 실행).** 프로젝트의 test / type-check / lint / build / 해당되면 실행을 돈다. 결과는 추측이 아니라 실행 출력. 실패가 있으면 그게 1차 게이트 결과 — 실패 목록을 보고하고, 이게 머지 차단 사유다.
-2. **② Oracle-extension (가능하면).** coverage로 변경 라인이 덮였나 본다(미덮이면 "초록불 불충분"). mutation 도구가 있으면 핵심 변경에 돌려 "테스트가 *옳은 이유로* 초록인지" 본다. 도구 없으면 "adequacy 미측정"으로 명시(거짓 안심 금지).
+2. **② Oracle-extension (가능하면).** coverage로 변경 라인이 덮였나 본다(미덮이면 "초록불 불충분"). mutation 도구가 있으면 핵심 변경에 돌려 "테스트가 *옳은 이유로* 초록인지" 본다. 도구 없으면 "adequacy 미측정"으로 명시(거짓 안심 금지). **복잡도/중복 린터(radon·lizard·eslint-complexity·jscpd 등)가 있으면 같이 돌려라** — 길이·순환복잡도·중복은 메트릭이 *결정적으로* 잡는다(오라클 빼기). `rlens-simplicity`는 이 카운트를 재지 말고, 메트릭이 짚은 후보가 *본질이냐 우발이냐 + 어떻게 더 단순해지나*만 판정한다.
 3. **③ Lens fan-out (advisory).** review-lens를 3축(oracle-subtraction·task-relevance·diversity)으로 **3~5개 선택**해 병렬 호출(`Agent`, haiku). 각 lens는 ①②가 못 보는 것만. failure-mode lens가 의심 지점을 내면 *판정하지 말고* ②(테스트/mutation)로 내려 확인 — **lens proposes, oracle disposes.**
 4. **④ (선택) 정리.** `completeness-critic`으로 어느 축도 안 본 사각지대. lens findings 간 긴장은 `friction-extractor`로 묶어도 됨(advisory).
 5. **출력 = 리뷰 리포트.** 사용자에게 인라인으로 보여주고, **`.cidd/reviews/<slug>.md`에 저장**한다(`<slug>` = PR/브랜치/변경 이름, 없으면 `<날짜>-<n>`). 리포트가 머지 판정의 근거 기록이므로 파일로 남긴다. 인라인·파일 둘 다 같은 내용.
@@ -42,6 +42,7 @@ review는 plan과 다르다 — **오라클이 풍부**하다. 그래서 lens가
 - `rlens-abstraction-fit` — 경계/추상이 옳은가
 - `rlens-security-logic` — SAST가 못 잡는 로직 권한 (auth/입력 닿을 때만)
 - `rlens-readability` — 호출부/시그니처 인간공학
+- `rlens-simplicity` — 필요 이상 복잡/긴 코드(우발적 복잡도). 메트릭(복잡도/중복 린터)이 후보를 세고, lens는 essential/accidental + 더 단순한 형태만 판정
 
 ## 비용·정직성
 - 서브에이전트 haiku. lens 3~5개로 제한.
