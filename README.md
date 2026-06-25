@@ -21,6 +21,7 @@
 - **build-oracle-loop**: layer 다이어그램 → work-unit 도출(공유 artifact=foundation 먼저 순차, 진짜 독립만 병렬 — *layer hop ≠ 독립 unit*) → builder 병렬 구현(worktree) → green까지 repair → unit별 **adversarial conformance**(plan 일치 + 옳은 이유로 green) → hard unit judge-panel → 전체 오라클 통합 → review handoff. **plan의 lens-friction을 여기 얹지 않는다**(오라클이 엔진).
 - **review-oracle-first**: ① 하드 오라클 실행(test/type/lint) → ② oracle-extension(coverage/mutation) → ③ review-lens는 ①②가 *구조적으로 못 보는 것만* advisory. **lens는 절대 머지 게이트가 아니다.**
 - plan·build·review 출력은 **맨 위에 layer 통과 flow ASCII 다이어그램** — layer(Route/Service/Infra/External/Worker…)를 왼쪽 축으로, 요청·데이터가 계층을 가로지르며 내려가는 경로. plan은 설계 흐름(+빠진 layer가 드러남), review는 변경 blast radius + layer별 오라클 커버리지(✅/⚠️). (강등된 `lens-flow`의 *이해* 가치가 여기서 시각화로 재사용됨.)
+- **lifecycle/meta 스킬**: `/cidd:auto`(목표→explore→…→review **자율 주행**; 전진=오라클 green, 멈춤=오라클 red·진짜 갈림길·시작 1회 동의 — 단계 기계는 그대로 재사용), `/cidd:status`(`.cidd/state.md` 읽기 전용 — 현재 stage·다음·막힌 이유), `/cidd:abort`(작업 폐기, 코드 미변경). **엔트리 라우터는 안 만든다**(Skill 설명 자동매칭이 그 역할, GOAL).
 - 그 외 **`/cidd:abort`** — 진행 중 작업 폐기(lifecycle 관리, stage 아님; state·history 정리, 코드 미변경).
 
 ## 에이전트 (lens 라이브러리 + 기계)
@@ -99,7 +100,7 @@ claude --plugin-dir /path/to/collective-intelligence-driven-development
 출력은 대상 프로젝트 cwd의 `.cidd/`에 모인다 — 결과물 `.cidd/explorations/`·`.cidd/plans/`·`.cidd/builds/`·`.cidd/reviews/`(써먹는 산출물; build은 코드 변경은 repo에, 리포트는 builds/), 과정 로그 `.cidd/runs/`(감사·dogfooding). 단계 연결: explore `explorations/<slug>.md`(초안) → plan friction이 `plans/<slug>.md`로 다듬음 → build이 소비·diff 생성 → review가 그 diff에 오라클. 네임스페이스라 남의 repo와 충돌 없음, `.gitignore`에 `.cidd/` 한 줄.
 
 ## 상태
-> ✅ **배포됨(2026-06-25)** — GitHub `pdev-jay/cidd-cc` + `pdev-jay/plugins` 카탈로그 경유 `/plugin install cidd@pdev-jay` + `/reload-plugins`로 **재시작 없이 in-session 적용**(설치엔 재시작 필수라는 통념은 실측 반증). `/cidd:*` 스킬 5 + `cidd:*` 에이전트 25 호출 가능. 실제 `cidd:lens-structure` dispatch 검증: resolve + on-task + tool 제한(Bash 없음)으로 **off-script 사라짐** — general-purpose 인라인이 3회 빗나갔던 근본 해소.
+> ✅ **배포됨(2026-06-25)** — GitHub `pdev-jay/cidd-cc` + `pdev-jay/plugins` 카탈로그 경유 `/plugin install cidd@pdev-jay` + `/reload-plugins`로 **재시작 없이 in-session 적용**(설치엔 재시작 필수라는 통념은 실측 반증). `/cidd:*` 스킬 7 + `cidd:*` 에이전트 25 호출 가능. 실제 `cidd:lens-structure` dispatch 검증: resolve + on-task + tool 제한(Bash 없음)으로 **off-script 사라짐** — general-purpose 인라인이 3회 빗나갔던 근본 해소.
 
 - 설계 검증됨(설치 전, general-purpose 인라인): plan friction-loop(run3~5: lens 한계커버리지·flow 강등·layer 다이어그램·결함#3), build gen-verify-repair + review oracle-first + `.cidd/state.md` 척추(run6 e2e on scratch repo). 도중 conformance git-status 결함 발견·수정.
 - 미검증(이제 실제 dispatch로 가능): 실제 `cidd:` 에이전트로 e2e 재현, 큰/모호 task 분해, coverage/mutation adequacy, 라우터.

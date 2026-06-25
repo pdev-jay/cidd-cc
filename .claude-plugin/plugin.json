@@ -1,7 +1,7 @@
 {
   "name": "cidd",
   "displayName": "Collective-Intelligence-Driven Development",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "오라클 가용성에 따라 단계마다(explore·plan·build·review) 모양이 다른 멀티에이전트 개발 플러그인. explore=발산 생성+judge, plan=lens 마찰, build=gen-verify-repair, review=하드 오라클+lens advisory(게이트 아님).",
   "author": { "name": "nucode" },
   "keywords": ["multi-agent", "collective-intelligence", "code-review", "planning", "lens", "oracle", "dialectic"]
