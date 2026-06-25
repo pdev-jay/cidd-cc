@@ -1,0 +1,5 @@
+# CIDD 런타임 출력 — 대상 repo에 생성되는 산출물이지 플러그인 소스가 아님
+.cidd/
+
+# macOS
+.DS_Store
