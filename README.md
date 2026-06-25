@@ -100,9 +100,8 @@ claude --plugin-dir /path/to/collective-intelligence-driven-development
 출력은 대상 프로젝트 cwd의 `.cidd/`에 모인다 — 결과물 `.cidd/explorations/`·`.cidd/plans/`·`.cidd/builds/`·`.cidd/reviews/`(써먹는 산출물; build은 코드 변경은 repo에, 리포트는 builds/), 과정 로그 `.cidd/runs/`(감사·dogfooding). 단계 연결: explore `explorations/<slug>.md`(초안) → plan friction이 `plans/<slug>.md`로 다듬음 → build이 소비·diff 생성 → review가 그 diff에 오라클. 네임스페이스라 남의 repo와 충돌 없음, `.gitignore`에 `.cidd/` 한 줄.
 
 ## 상태
-> ✅ **배포됨(2026-06-25)** — GitHub `pdev-jay/cidd-cc` + `pdev-jay/plugins` 카탈로그 경유 `/plugin install cidd@pdev-jay` + `/reload-plugins`로 **재시작 없이 in-session 적용**(설치엔 재시작 필수라는 통념은 실측 반증). `/cidd:*` 스킬 7 + `cidd:*` 에이전트 25 호출 가능. 실제 `cidd:lens-structure` dispatch 검증: resolve + on-task + tool 제한(Bash 없음)으로 **off-script 사라짐** — general-purpose 인라인이 3회 빗나갔던 근본 해소.
+스킬 7(explore·plan·build·review + lifecycle auto·status·abort) + 서브에이전트 25. 설치는 위 "설치/사용" 참조.
 
-- 설계 검증됨(설치 전, general-purpose 인라인): plan friction-loop(run3~5: lens 한계커버리지·flow 강등·layer 다이어그램·결함#3), build gen-verify-repair + review oracle-first + `.cidd/state.md` 척추(run6 e2e on scratch repo). 도중 conformance git-status 결함 발견·수정.
-- 미검증(이제 실제 dispatch로 가능): 실제 `cidd:` 에이전트로 e2e 재현, 큰/모호 task 분해, coverage/mutation adequacy, 라우터.
+설계 근거(오라클 비대칭 · 모델 배치 haiku/sonnet/상속 · 오라클 배선)는 작은 케이스 측정으로 다듬었다 — 예: 테스트가 green이어도 mutation이 "옳은 이유로 green인지"를 잡는 흐름을 end-to-end로 확인. **검증 진행 중**: 더 크고 모호한 task에서의 분해, `auto`의 실제 end-to-end 주행.
 
 > ⚠️ 정직성: review를 오라클 없이 돌리면 advisory일 뿐 게이트가 아니다. "범용 개발 도구" 주장은 다양한 실제 task 측정 뒤에.
