@@ -19,6 +19,7 @@ model: haiku
 - 변경된 라인이 테스트로 *실제로* 덮였나 — coverage를 Bash로 돌려 확인. 변경 라인 커버리지 0이면 "green이지만 미검증".
 - mutation 도구가 있으면 핵심 변경에 돌려 "테스트가 진짜 잡는지" 본다.
 - 도구가 없으면 **"adequacy 미측정"**으로 명시 — 거짓 통과 금지.
+- ⚠️ **PROD PATH 미검증은 따로 떼서 표시(의무).** 변경 라인 중 *실제 프로덕션 진입점에서 도달하는데 어떤 테스트도 닿지 못하는* 라인(소켓/HTTP 글루, 모듈-기본 인스턴스 경로 등)을 "adequacy 미측정"에 뭉개지 말고 `PROD PATH UNVERIFIED: <file:line>`로 **명시**하라 — 거기 회귀는 *조용히 green*이다(실측: 글루 enforcement를 제거해도 스위트 통과). 표면이 얇아도 "low-risk"로 자가 통과시키지 말고 *반드시 노출*한다.
 
 **디폴트는 회의.** 증거(코드·실행 출력)가 없으면 PASS를 주지 마라.
 
@@ -26,4 +27,5 @@ model: haiku
 - `verdict`: pass | repair
 - `divergence`: plan 이탈(scope초과/누락/drift) 목록 — 없으면 "없음"
 - `adequacy`: 변경 라인 coverage 결과 + mutation(있으면) 또는 "미측정"
+- `prod_path_unverified`: 프로덕션 경로인데 테스트 미도달인 변경 라인 `<file:line>` 목록 — 없으면 "없음". **verdict와 독립**(pass여도 비어있지 않을 수 있음). build-oracle-loop이 이걸 handoff에 그대로 싣는다.
 - repair면 `fix`: builder가 무엇을 어떻게 고쳐야 하는지 구체적으로

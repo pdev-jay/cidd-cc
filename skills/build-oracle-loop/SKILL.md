@@ -52,14 +52,14 @@ build에서 줄이는 건 *분해·병렬·judge* 같은 심의/구조 비용이
 ### 3. unit별 conformance 게이트 (adversarial — CIDD 차별점)
 완료된 unit마다 별도 `build-conformance` 스켑틱을 띄운다. 두 축을 *적대적으로* 검증:
 - **(a) plan 일치** — 구현이 배정 plan/다이어그램에서 이탈했나? scope 초과(요청 안 한 것 추가) / 누락(plan에 있는데 안 함) / drift(다르게 함).
-- **(b) 옳은 이유로 green인가** — 변경 라인 coverage 실행, mutation 도구 있으면 핵심 변경에 돌려 "테스트가 진짜 잡는지" 확인. 없으면 "adequacy 미측정" 명시.
+- **(b) 옳은 이유로 green인가** — 변경 라인 coverage 실행, mutation 도구 있으면 핵심 변경에 돌려 "테스트가 진짜 잡는지" 확인. 없으면 "adequacy 미측정" 명시. ⚠️ **프로덕션 경로인데 테스트 미도달인 변경 라인은 `PROD PATH UNVERIFIED: <file:line>`로 따로 떼서 반환**(adequacy에 뭉개지 말 것) — 거기 회귀는 조용히 green이라(실측), "low-risk"로 자가 통과 금지, *반드시 노출*해 handoff로.
 - 스켑틱 디폴트는 회의 — 증거 없으면 PASS 주지 마라. **fail이면 repair로 되돌린다**(builder에 구체 지시).
 
 ### 4. 어렵거나 모호한 unit → judge-panel (선택)
 접근이 갈리거나 high-stakes인 unit은 `builder`를 N회(서로 다른 접근으로) 띄워 N개 구현 후보를 만들고 `build-judge`로 판정한다. **오라클 통과가 1차 필터(못 통과 = 탈락), 통과한 것들만 품질 lens로 점수.** 이건 *plan*에 대한 lens가 아니라 *구현들*에 대한 토너먼트다.
 
 ### 5. 통합
-worktree를 머지하고 **전체 오라클을 `cidd:oracle-runner`로 돌린다** — repo 전체 하드(test/type/build) + adequacy(coverage/mutation/complexity)를 구조화로 받는다. 충돌·회귀가 나오면 repair. 전체 하드 green + 모든 unit conformance 통과여야 build 완료. **runner의 adequacy 숫자(또는 미측정 축)를 그대로 `handoff.build→review`에 적어라** — 이게 그동안 'adequacy 미측정'이던 구멍을 메우고 review에 집중점을 넘기는 지점이다.
+worktree를 머지하고 **전체 오라클을 `cidd:oracle-runner`로 돌린다** — repo 전체 하드(test/type/build) + adequacy(coverage/mutation/complexity)를 구조화로 받는다. 충돌·회귀가 나오면 repair. 전체 하드 green + 모든 unit conformance 통과여야 build 완료. **runner의 adequacy 숫자(또는 미측정 축)를 그대로 `handoff.build→review`에 적어라** — 이게 그동안 'adequacy 미측정'이던 구멍을 메우고 review에 집중점을 넘기는 지점이다. **각 unit conformance의 `prod_path_unverified` 목록도 합쳐 handoff에 싣는다** — review가 그 라인을 머지 판정의 의무 advisory로 본다.
 
 ### 6. review로 handoff
 consolidated diff + build 리포트를 만들어 `review-oracle-first`의 입력으로 넘긴다. **build이 통과해도 review는 돈다**(아래 경계 참조).
