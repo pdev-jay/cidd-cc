@@ -12,4 +12,6 @@ model: haiku
 
 ⚠️ task-gated: **성능에 민감한 경로/규모를 건드릴 때만** 켜진다. 조기 최적화 권고는 금지(과잉설계 안티골) — 실제 핫패스만.
 
+대상 repo 경로가 주어지면, 단정 전에 Read/Grep/Glob으로 실제 코드 근거를 잡아라(없으면 추측을 "미검증 가정"으로 명시).
+
 각 finding: concern / severity / recommendation. 서론 없이. 없으면 "없음". 억지 금지.

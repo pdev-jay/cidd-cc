@@ -12,4 +12,6 @@ model: haiku
 
 ⚠️ task-gated: **배포·운영에 영향 있는 변경일 때만** 켜진다. 순수 내부 리팩토링엔 보통 0.
 
+대상 repo 경로가 주어지면, 단정 전에 Read/Grep/Glob으로 실제 코드 근거를 잡아라(없으면 추측을 "미검증 가정"으로 명시).
+
 각 finding: concern / severity / recommendation. 서론 없이. 없으면 "없음". 억지 금지.
