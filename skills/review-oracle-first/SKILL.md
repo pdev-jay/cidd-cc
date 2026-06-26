@@ -16,7 +16,7 @@ review는 plan과 다르다 — **오라클이 풍부**하다. 그래서 lens가
 - diff 또는 변경된 파일 + 대상 repo (오라클 실행에 필수).
 
 ## 단계 상태 (lifecycle 척추)
-**진입 시** 대상 repo의 `.cidd/state.md`에서 `build: done`인 active slug의 build 리포트·diff를 읽는다(있으면). `handoff.build→review`에 적힌 "adequacy 미측정 / conformance 우려" unit에 **오라클·lens를 우선 겨눈다**(build이 약하다고 자백한 곳). build 없이 직접 호출된 diff면 그냥 진행. **완료 시** 갱신: `review: done → .cidd/reviews/<slug>.md`, `gate: pass|fail`. **끝나면 `AskUserQuestion` 결정 메뉴(accept/refine/back/pause/abandon)로 고른 전이를 자동 적용**(README "단계 끝 = 결정 메뉴") — accept면 gate pass 시 `stage: done`(+ history), fail이면 refine/back. (`updated`는 세션이 박음.)
+**진입 시** 대상 repo의 `.cidd/state.md`에서 `build: done`인 active slug의 build 리포트·diff를 읽는다(있으면). `handoff.build→review`에 적힌 "adequacy 미측정 / conformance 우려" unit에 **오라클·lens를 우선 겨눈다**(build이 약하다고 자백한 곳). build 없이 직접 호출된 diff면 그냥 진행. **완료 시** 갱신: `review: done → .cidd/reviews/<slug>.md`, `gate: pass|fail`. **끝나면 `AskUserQuestion` 결정 메뉴(accept/refine/back/pause/abandon)로 고른 전이를 자동 적용**(README "단계 끝 = 결정 메뉴") — accept면 gate pass 시 `stage: done`(+ history), fail이면 refine/back. ⚠️ **단 `auto` 구동 중이면 끝-메뉴 생략, gate 결과(pass/fail)만 반환** — pass면 auto가 done 처리, fail이면 멈춤. 메뉴는 fork·red·done에서만. (`updated`는 세션이 박음.)
 
 ## 규모 적응 (먼저)
 review에서 **하드 오라클은 규모 무관 항상 최대**로 — 게이트이자 제일 싼 안전망이다. 줄이는 건 lens(advisory) 개수뿐.
