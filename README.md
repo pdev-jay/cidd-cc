@@ -73,7 +73,7 @@
 
 | lens | 보는 것 | 켜기 |
 |---|---|---|
-| `rlens-maintainability` | 6개월 뒤 고칠 사람 — 가독성·네이밍·숨은 결합·암묵 가정 | 상시 |
+| `rlens-maintainability` | 6개월 뒤 고칠 사람 — 숨은 결합·암묵 가정·맥락 누락 (가독성→readability, 복잡도→simplicity 양보) | 상시 |
 | `rlens-convention` | 기존 코드 패턴·관용구와 일치하나 | repo 필수 |
 | `rlens-failure-mode` | 초록불이 옳은 이유로 초록인가 (의심만 → 오라클이 판정) | 상시 |
 | `rlens-abstraction-fit` | 추상·경계가 옳은가 — 삭제 테스트(얕은 모듈)·의존성 방향 | 상시(코드 필요) |
