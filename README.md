@@ -73,7 +73,7 @@
 
 | lens | 보는 것 | 켜기 |
 |---|---|---|
-| `rlens-maintainability` | 6개월 뒤 고칠 사람 — 숨은 결합·암묵 가정·맥락 누락 (가독성→readability, 복잡도→simplicity 양보) | 상시 |
+| `rlens-maintainability` | 6개월 뒤 고칠 사람 — 숨은 결합·암묵 가정·맥락 누락 (호출부·이름→readability, 로컬 복잡도→simplicity 양보) | 상시 |
 | `rlens-convention` | 기존 코드 패턴·관용구와 일치하나 | repo 필수 |
 | `rlens-failure-mode` | 초록불이 옳은 이유로 초록인가 (의심만 → 오라클이 판정) | 상시 |
 | `rlens-abstraction-fit` | 추상·경계가 옳은가 — 삭제 테스트(얕은 모듈)·의존성 방향 | 상시(코드 필요) |
@@ -146,7 +146,7 @@ profile: **micro / small / standard / high-risk**. ⚠️ **검증(하드 오라
 4. 오라클 3계층: hard / extension / lens. 하드가 보는 걸 lens로 중복 금지.
 
 ## 설치 / 사용
-Claude Code `Agent` 도구로 동작. 서브에이전트 모델은 작업에 맞춰 haiku(grounded·enumeration) / sonnet(grounding 없는 판단) / 상속(코드생성), low effort.
+Claude Code `Agent` 도구로 동작. 서브에이전트 모델은 작업에 맞춰 haiku(grounded·enumeration) / sonnet(grounding 없는 판단 — plan 판단 lens·approach-judge·plan-reviser·oracle-runner) / 상속(생성 — builder·approach-generator), low effort.
 
 ```bash
 # 설치 (GitHub) — 이 repo가 자체 마켓플레이스를 포함한다
