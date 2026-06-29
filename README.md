@@ -57,12 +57,11 @@
 ```
 
 ## 에이전트 (lens 라이브러리 + 기계)
-**plan lens (8)** — 오라클 빈곤이라 lens가 주력(마찰). 매 run 3~5개만 *도출*:
+**plan lens (7)** — 오라클 빈곤이라 lens가 주력(마찰). 매 run 3~5개만 *도출*:
 
 | lens | 보는 것 | 켜기 |
 |---|---|---|
 | `lens-structure` | 변경 비용을 어디 쌓나 — 벌지 않은 seam(과/미설계)·한 개념의 분산(지역성) | 상시 |
-| `lens-feature` | 기능 완결성 — happy path·엣지·에러 처리·빠진 단계 | 상시 |
 | `lens-failure` | 무엇이 깨지나 — 경계값·실패 경로·예외·동시 접근 | 상시 |
 | `lens-testability` | 이대로 테스트 가능한가 — 부작용·전역상태·시간/IO 결합, 주입·관측 | side-effect·시간·IO·전역·주입 닿을 때 |
 | `lens-scope` | 과/미설계(YAGNI) — 요청 안 한 추상·빠진 핵심 단계 | 상시 |
@@ -159,12 +158,12 @@ Claude Code `Agent` 도구로 동작. 서브에이전트 모델은 작업에 맞
 claude --plugin-dir /path/to/cidd-cc
 ```
 
-설치되면 `/cidd:*` 스킬 7 + `cidd:*` 서브에이전트 24가 등록된다(`/help`·`/agents`에서 확인). 슬래시로 부르거나("`/cidd:plan-friction-loop`") 자연어로 맥락 자동 호출된다("이 plan 마찰 검토해줘", "이 변경 리뷰해줘", "알아서 끝까지").
+설치되면 `/cidd:*` 스킬 7 + `cidd:*` 서브에이전트 23이 등록된다(`/help`·`/agents`에서 확인). 슬래시로 부르거나("`/cidd:plan-friction-loop`") 자연어로 맥락 자동 호출된다("이 plan 마찰 검토해줘", "이 변경 리뷰해줘", "알아서 끝까지").
 
 출력은 대상 프로젝트 cwd의 `.cidd/`에 모인다 — 결과물 `.cidd/explorations/`·`.cidd/plans/`·`.cidd/builds/`·`.cidd/reviews/`(써먹는 산출물; build은 코드 변경은 repo에, 리포트는 builds/), 과정 로그 `.cidd/runs/`(감사·dogfooding). 단계 연결: explore `explorations/<slug>.md`(초안) → plan friction이 `plans/<slug>.md`로 다듬음 → build이 소비·diff 생성 → review가 그 diff에 오라클. 네임스페이스라 남의 repo와 충돌 없음, `.gitignore`에 `.cidd/` 한 줄.
 
 ## 상태
-스킬 7(explore·plan·build·review + lifecycle auto·status·abort) + 서브에이전트 24. 설치는 위 "설치/사용" 참조.
+스킬 7(explore·plan·build·review + lifecycle auto·status·abort) + 서브에이전트 23. 설치는 위 "설치/사용" 참조.
 
 설계 근거(오라클 비대칭 · 모델 배치 haiku/sonnet/상속 · 오라클 배선)는 작은 케이스 측정으로 다듬었다 — 예: 테스트가 green이어도 mutation이 "옳은 이유로 green인지"를 잡는 흐름을 end-to-end로 확인. **검증 진행 중**: 더 크고 모호한 task에서의 분해, `auto`의 실제 end-to-end 주행.
 
