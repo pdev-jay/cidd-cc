@@ -14,7 +14,7 @@
 | `/cidd:direction-explore` | explore (0) | **없음**(초안조차) | 발산 생성 → judge-panel 종합 | — |
 | `/cidd:plan-friction-loop` | plan | 빈곤 | lens **마찰**(심의) | — |
 | `/cidd:build-oracle-loop` | build | **최대** | **gen-verify-repair** | unit별 오라클 green + conformance |
-| `/cidd:review-oracle-first` | review | 풍부(완성품) | 하드 오라클, lens advisory | 하드 오라클 pass + adequacy |
+| `/cidd:review-oracle-first` | review | 풍부(완성품) | 하드 오라클, lens advisory | 하드 오라클 pass (adequacy·미검증 경로는 게이트 아닌 고지) |
 
 - **direction-explore** (stage 0, plan이 *없을* 때): 서로 다른 stance로 접근안 독립 발산(anchoring 회피) → judge-panel 비교·종합 → **초안 plan**. 그 초안이 plan-friction-loop 입력. 넓고 갈리는 결정에만(좁으면 과잉 — 바로 초안 잡아 friction-loop).
 - **plan-friction-loop**: lens fan-out → 충돌 + high-severity findings 추출 → revise → 마찰 없을 때까지(loop-until-dry + dedup) → completeness-critic.
@@ -47,7 +47,7 @@
    ├─ 결정 메뉴
    ▼
 [ review ]    오라클 풍부 · oracle-first
-   │   oracle-runner = hard(test/type/lint) + adequacy(coverage/mutation/complexity)  ← GATE
+   │   oracle-runner = hard(test/type/lint) ← GATE  +  adequacy(coverage/mutation) → 고지(게이트 아님)
    │   review-lens는 advisory만 (게이트 아님)  → 리뷰 리포트
    │   gate pass
    ▼
