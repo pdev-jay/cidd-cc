@@ -15,7 +15,7 @@
 | `/cidd:build-oracle-loop` | build | **최대** | **gen-verify-repair** | unit별 오라클 green + conformance |
 | `/cidd:review-oracle-first` | review | 풍부(완성품) | 하드 오라클, lens advisory | 하드 오라클 pass (adequacy·미검증 경로는 게이트 아닌 고지) |
 
-- **plan-friction-loop** (파이프라인의 부트스트랩 — 앞 단계 없음): lens fan-out → 충돌 + high-severity findings 추출 → revise → 마찰 없을 때까지(loop-until-dry + dedup) → completeness-critic(사각지대) → assumption-critic(숨은 전제).
+- **plan-friction-loop** (파이프라인의 부트스트랩 — 앞 단계 없음): goal만 있으면 먼저 **목표 명확화 게이트**(서브에이전트 없음, 메인이 직접 — goal이 다중 해석이고 그게 plan 핵심 구조를 가를 때만 `AskUserQuestion` 1라운드, 대부분은 스킵) → lens fan-out → 충돌 + high-severity findings 추출 → revise → 마찰 없을 때까지(loop-until-dry + dedup) → completeness-critic(사각지대) → assumption-critic(숨은 전제) → 출력 전 메인의 자기모순 재독(라운드간 잔재 정리, 서브에이전트 없음).
 - **삭제됨(2026-07-06, 측정 후)**: `direction-explore`(stance별 독립 발산 + judge-panel 종합으로 초안 plan을 만들던 stage 0). 실측 3라운드(fixture: 기존 컨벤션을 무시한 오답 초안) — ① "단일 plan을 critique만 하면 patch에 갇힌다"는 가설 기각(plan-stage lens가 단독으로도 완전 대체를 권고함) ② explore가 critique-only보다 더 나은/다른 최종 아키텍처에 도달한다는 근거 없음(양쪽 다 동일 지점 도달) ③ explore 고유값으로 남았던 "갈린 가정(contested assumption) 서핑"도 비교 없이 단일 plan에 "이 접근이 성립하려면 뭘 전제해야 하나"를 직접 묻는 것(`assumption-critic`)으로 더 싸게, 오히려 더 많이 재현됨. 세 가설 다 기각 — 자리를 `assumption-critic`에 넘김.
 - **build-oracle-loop**: layer 다이어그램 → work-unit 도출(공유 artifact=foundation 먼저 순차, 진짜 독립만 병렬 — *layer hop ≠ 독립 unit*) → builder 병렬 구현(worktree) → green까지 repair → unit별 **adversarial conformance**(plan 일치 + 옳은 이유로 green) → hard unit judge-panel → 전체 오라클 통합 → review handoff. **plan의 lens-friction을 여기 얹지 않는다**(오라클이 엔진).
 - **review-oracle-first**: ① 하드 오라클 실행(test/type/lint) → ② oracle-extension(coverage/mutation) → ③ review-lens는 ①②가 *구조적으로 못 보는 것만* advisory. **lens는 절대 머지 게이트가 아니다.**
@@ -31,8 +31,10 @@
    │   /cidd:auto면 자동 주행: 전진 = 오라클 green / 멈춤 = 오라클 red · 진짜 갈림길
    ▼
 [ plan ]      오라클 빈곤 · 마찰 (부트스트랩 — 앞 단계 없음)
+   │   goal만 있으면 목표 명확화 게이트(메인 직접, 다중해석+구조를 가를 때만 질문)
    │   lens 3~5개 병렬 → friction-extractor → plan-reviser
-   │   ↺ loop-until-dry → completeness-critic(사각지대) → assumption-critic(숨은 전제) → 다듬은 plan
+   │   ↺ loop-until-dry → completeness-critic(사각지대) → assumption-critic(숨은 전제)
+   │   → 출력 전 메인 자기모순 재독 → 다듬은 plan
    ├─ 결정 메뉴: accept→다음 / refine→재실행 / pause / abandon
    ▼
 [ build ]     오라클 최대 · 생성-검증-repair
