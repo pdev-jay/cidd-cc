@@ -18,7 +18,7 @@
 - **plan-friction-loop** (파이프라인의 부트스트랩 — 앞 단계 없음): goal만 있으면 먼저 **목표 명확화 게이트**(서브에이전트 없음, 메인이 직접 — goal이 다중 해석이고 그게 plan 핵심 구조를 가를 때만 `AskUserQuestion` 1라운드, 대부분은 스킵) → lens fan-out → 충돌 + high-severity findings 추출 → revise → 마찰 없을 때까지(loop-until-dry + dedup) → completeness-critic(사각지대) → assumption-critic(숨은 전제) → 출력 전 메인의 자기모순 재독(라운드간 잔재 정리, 서브에이전트 없음).
 - **삭제됨(2026-07-06, 측정 후)**: `direction-explore`(stance별 독립 발산 + judge-panel 종합으로 초안 plan을 만들던 stage 0). 실측 3라운드(fixture: 기존 컨벤션을 무시한 오답 초안) — ① "단일 plan을 critique만 하면 patch에 갇힌다"는 가설 기각(plan-stage lens가 단독으로도 완전 대체를 권고함) ② explore가 critique-only보다 더 나은/다른 최종 아키텍처에 도달한다는 근거 없음(양쪽 다 동일 지점 도달) ③ explore 고유값으로 남았던 "갈린 가정(contested assumption) 서핑"도 비교 없이 단일 plan에 "이 접근이 성립하려면 뭘 전제해야 하나"를 직접 묻는 것(`assumption-critic`)으로 더 싸게, 오히려 더 많이 재현됨. 세 가설 다 기각 — 자리를 `assumption-critic`에 넘김.
 - **build-oracle-loop**: layer 다이어그램 → work-unit 도출(공유 artifact=foundation 먼저 순차, 진짜 독립만 병렬 — *layer hop ≠ 독립 unit*) → builder 병렬 구현(worktree) → green까지 repair → unit별 **adversarial conformance**(plan 일치 + 옳은 이유로 green) → hard unit judge-panel → 전체 오라클 통합 → review handoff. **plan의 lens-friction을 여기 얹지 않는다**(오라클이 엔진).
-- **review-oracle-first**: ① 하드 오라클 실행(test/type/lint) → ② oracle-extension(coverage/mutation) → ③ review-lens는 ①②가 *구조적으로 못 보는 것만* advisory. **lens는 절대 머지 게이트가 아니다.**
+- **review-oracle-first**: ① 하드 오라클 실행(test/type/lint) → ② oracle-extension(coverage/mutation) → ③ review-lens는 ①②가 *구조적으로 못 보는 것만* advisory. **lens는 절대 머지 게이트가 아니다.** ④ CLAUDE.md 후보 추적(서브에이전트 없음) — advisory 중 "코드로 안 나오고 · 상시 규칙이고 · 팀 전체가 알아야 하는" 것만 걸러 `.cidd/claude-md-candidates.md`에 누적, **다른 review에서 반복 확인(count≥2)된 것만** 사람 승인을 받고서야 실제 `CLAUDE.md`에 반영(자동 기록 없음). 대부분의 run은 후보 0개가 정상.
 - plan·build·review 출력은 **맨 위에 layer 통과 flow ASCII 다이어그램** — layer(Route/Service/Infra/External/Worker…)를 왼쪽 축으로, 요청·데이터가 계층을 가로지르며 내려가는 경로. plan은 설계 흐름(+빠진 layer가 드러남), review는 변경 blast radius + layer별 오라클 커버리지(✅/⚠️). (data/control/state의 *이해* 가치는 비평 lens가 아니라 이 시각화로 산다.)
 - **lifecycle/meta 스킬**: `/cidd:auto`(목표→plan→…→review **자율 주행**; 전진=오라클 green, 멈춤=오라클 red·진짜 갈림길·시작 1회 동의 — 단계 기계는 그대로 재사용), `/cidd:status`(`.cidd/state.md` 읽기 전용 — 현재 stage·다음·막힌 이유), `/cidd:abort`(작업 폐기, 코드 미변경). **엔트리 라우터는 안 만든다**(Skill 설명 자동매칭이 그 역할).
 ## 작동 시나리오
@@ -153,7 +153,7 @@ claude --plugin-dir /path/to/cidd-cc
 
 설치되면 `/cidd:*` 스킬 6 + `cidd:*` 서브에이전트 22가 등록된다(`/help`·`/agents`에서 확인). 슬래시로 부르거나("`/cidd:plan-friction-loop`") 자연어로 맥락 자동 호출된다("이 plan 마찰 검토해줘", "이 변경 리뷰해줘", "알아서 끝까지").
 
-출력은 대상 프로젝트 cwd의 `.cidd/`에 모인다 — 결과물 `.cidd/plans/`·`.cidd/builds/`·`.cidd/reviews/`(써먹는 산출물; build은 코드 변경은 repo에, 리포트는 builds/), 과정 로그 `.cidd/runs/`(감사·dogfooding). 단계 연결: plan-friction-loop이 부트스트랩으로 `plans/<slug>.md`를 만듦 → build이 소비·diff 생성 → review가 그 diff에 오라클. 네임스페이스라 남의 repo와 충돌 없음, `.gitignore`에 `.cidd/` 한 줄.
+출력은 대상 프로젝트 cwd의 `.cidd/`에 모인다 — 결과물 `.cidd/plans/`·`.cidd/builds/`·`.cidd/reviews/`(써먹는 산출물; build은 코드 변경은 repo에, 리포트는 builds/), 과정 로그 `.cidd/runs/`(감사·dogfooding), 누적 원장 `.cidd/claude-md-candidates.md`(review가 반복 확인한 CLAUDE.md 후보 — 사람 승인 전엔 그냥 로컬 스크래치). 단계 연결: plan-friction-loop이 부트스트랩으로 `plans/<slug>.md`를 만듦 → build이 소비·diff 생성 → review가 그 diff에 오라클. 네임스페이스라 남의 repo와 충돌 없음, `.gitignore`에 `.cidd/` 한 줄.
 
 ## 상태
 스킬 6(plan·build·review + lifecycle auto·status·abort) + 서브에이전트 22. 설치는 위 "설치/사용" 참조.
